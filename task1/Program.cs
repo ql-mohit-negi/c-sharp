@@ -25,12 +25,13 @@ class Game
     static Random rnd;
     public Game ()
     {
-        Console.WriteLine("<--- Welcome to RPGBattler --->");
-        Console.Write("Please provide your name to continue >> ");
+        Console.Write("<--- Welcome to RPGBattler --->\nPlease provide your name to continue >> ");
         string? name = Console.ReadLine();
-        if(name == "")
+        while(name.Length<3)
         {
-            throw new Exception("Name not provided. Please provide name for continuing");
+            PrintInRed("Please enter a valid name. Name must be at least 3 characters long.\n");
+            Console.Write("Please provide your name to continue >> ");
+            name = Console.ReadLine();
         }
 
         user = new User(name, 100);
@@ -43,8 +44,23 @@ class Game
         Console.WriteLine($"Health: {u.Health}\n\n");
     }
 
+    static void PrintInRed(string mssg)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(mssg);
+        Console.ResetColor();
+    }
+
+    static void PrintInGreen(string mssg)
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(mssg);
+        Console.ResetColor();
+    }
+
     public void StartGame()
     {
+        bool aborted = false;
         while(user.Health > 0)
         {
             Console.WriteLine("Choose any one option >> ");
@@ -59,35 +75,50 @@ class Game
             switch (user_choice)
             {
                 case 1:
-                    Console.ForegroundColor = ConsoleColor.Red;
                     int damage = rnd.Next(1, 101);
                     if(damage >= user.Health/2)
                     {
-                        Console.WriteLine("Critical Hit!!");
+                        PrintInRed("Critical Hit!!");
                     }
-                    user.Health -= damage;
-                    PrintStatus(user);
-                    Console.ResetColor();
+                    user.Health = Math.Max(user.Health - damage, 0);
+                    PrintInRed($"Current health: {user.Health}, Damage taken: {damage}\n");
                     break;
 
                 case 2:
                     Console.ForegroundColor = ConsoleColor.Green;
                     int heal_points = rnd.Next(1, 100);
-                    user.Health += heal_points;
+                    user.Health = Math.Min(user.Health + heal_points, 100);
                     PrintStatus(user);
                     Console.ResetColor();
                     break;
 
                 case 3:
-                    Console.WriteLine("Aborting the game!!");
+                    PrintInRed("Aborting the game!!");
                     abort = true;
+                    break;
+                default:
+                    PrintInRed("Please enter a valid choice!!");
                     break;
             }
 
             if (abort)
             {
+                aborted = true;
                 break;
             }
+        }
+
+        if(user.Health <= 0)
+        {
+            PrintInRed($"{user.Name} you lost!! Better luck next time.");
+        }
+        else if(user.Health > 0 && !aborted)
+        {
+            PrintInGreen($"Congratulations {user.Name}!!, You won the game.");
+        }
+        else
+        {
+            PrintInRed("Game Aborted!!");
         }
     }
 }

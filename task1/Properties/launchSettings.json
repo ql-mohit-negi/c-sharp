@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RPGBattler": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

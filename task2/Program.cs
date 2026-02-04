@@ -1,0 +1,145 @@
+﻿// See https://aka.ms/new-console-template for more information
+
+class GradebookManager
+{
+    List<int> Grades;
+
+    public GradebookManager()
+    {
+        Grades = new List<int>();
+    }
+
+    public void AddGrade(int grade)
+    {
+        Grades.Add(grade);
+    }
+
+    public void AddGrade(int[] grades)
+    {
+        Grades.AddRange(grades);
+    }
+
+    public double CalculateAverage()
+    {
+        double avg = 0.0;
+
+        foreach(int grade in Grades)
+        {
+            avg += Convert.ToDouble(grade);
+        }
+
+        return Grades.Count != 0 ? avg/Grades.Count : 0;
+    }
+    
+    public void PrintReport()
+    {
+        Console.WriteLine("<------- Report ------->");
+        Console.WriteLine($"Total number of grades: {Grades.Count}");
+        for(int i= 0; i < Grades.Count; i++)
+        {
+
+            Console.WriteLine($"Grade {i+1}: {Grades[i]}");
+        }
+        Console.Write("\n\n");
+    }
+}
+
+
+class Program
+{
+    public static void Main(string[] args)
+    {
+        GradebookManager manager = new GradebookManager();
+        Console.WriteLine("<------ GRADEBOOK MANAGER ----->");
+        Console.WriteLine("Choose any one >> ");
+        while (true)
+        {
+            Console.WriteLine("1. Add Single Grade\n2. Add Multiple Grades\n3. See Average\n4. Report\n5. Exit");
+            bool exit = false;
+            if(int.TryParse(Console.ReadLine(), out int user_choice))
+            {
+                switch (user_choice)
+                {
+                    case 1:
+                        Console.Write("Enter grade out of 100 >> ");
+                        if(int.TryParse(Console.ReadLine(), out int grade))
+                        {
+                            if(grade < 0 || grade > 100)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Invalid grade. Grade should be in the range 0-100\n\n");
+                                Console.ResetColor();
+                            }
+                            else manager.AddGrade(grade);
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"Invalid grade: {grade}");
+                            Console.ResetColor();
+                        }
+                        break;
+
+                    case 2:
+                        Console.Write("Enter the number of grades you want to add >> ");
+                        if (int.TryParse(Console.ReadLine(), out int n))
+                        {
+                            int[] _grades = new int[n];
+                            int i = 0;
+                            while(i<n)
+                            {
+                                bool ok = int.TryParse(Console.ReadLine(), out int next_grade);
+                                if(ok)
+                                {
+                                    _grades[i] = next_grade;
+                                    i++;
+                                }
+                                else
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine($"Invalid grade: {user_choice}\n\n");
+                                    Console.ResetColor();
+                                }
+                            }
+
+                            manager.AddGrade(_grades);
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"Invalid number: {n}\n\n");
+                            Console.ResetColor();
+                        }
+                        break;
+
+                    case 3:
+                        double avg = manager.CalculateAverage();
+                        Console.Write($"Average grades >> {avg}\n\n");
+                        break;
+
+                    case 4:
+                        manager.PrintReport();
+                        break;
+
+                    case 5:
+                        exit = true;
+                        break;
+
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Invalid choice: {user_choice}. Please choose any in range 1-5.\n\n");
+                        Console.ResetColor();
+                        break;
+                }
+
+                if (exit) break;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Invalid choice. Please choose a valid number.\n\n");
+                Console.ResetColor();
+            }
+        }
+    }
+}

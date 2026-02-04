@@ -9,12 +9,7 @@ class GradebookManager
         Grades = new List<int>();
     }
 
-    public void AddGrade(int grade)
-    {
-        Grades.Add(grade);
-    }
-
-    public void AddGrade(int[] grades)
+    public void AddGrade(params int[] grades)
     {
         Grades.AddRange(grades);
     }
@@ -25,7 +20,7 @@ class GradebookManager
 
         foreach(int grade in Grades)
         {
-            avg += Convert.ToDouble(grade);
+            avg += grade;
         }
 
         return Grades.Count != 0 ? avg/Grades.Count : 0;
@@ -40,7 +35,7 @@ class GradebookManager
 
             Console.WriteLine($"Grade {i+1}: {Grades[i]}");
         }
-        Console.Write("\n\n");
+        Console.Write($"Grade Average: {CalculateAverage()}\n\n");
     }
 }
 
@@ -50,8 +45,7 @@ class Program
     public static void Main(string[] args)
     {
         GradebookManager manager = new GradebookManager();
-        Console.WriteLine("<------ GRADEBOOK MANAGER ----->");
-        Console.WriteLine("Choose any one >> ");
+        Console.WriteLine("<------ GRADEBOOK MANAGER ----->\nChoose any one >> ");
         while (true)
         {
             Console.WriteLine("1. Add Single Grade\n2. Add Multiple Grades\n3. See Average\n4. Report\n5. Exit");
@@ -88,8 +82,8 @@ class Program
                             int i = 0;
                             while(i<n)
                             {
-                                bool ok = int.TryParse(Console.ReadLine(), out int next_grade);
-                                if(ok)
+                                bool isValidGrade = int.TryParse(Console.ReadLine(), out int next_grade);
+                                if(isValidGrade && (next_grade>=0 && next_grade<=100))
                                 {
                                     _grades[i] = next_grade;
                                     i++;
@@ -97,7 +91,7 @@ class Program
                                 else
                                 {
                                     Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine($"Invalid grade: {user_choice}\n\n");
+                                    Console.WriteLine($"Invalid grade: {next_grade}\n\n");
                                     Console.ResetColor();
                                 }
                             }

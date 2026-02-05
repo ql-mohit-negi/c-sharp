@@ -69,39 +69,36 @@ class Program
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"Invalid grade: {grade}");
+                            Console.WriteLine("\nInvalid grade. Grade must be in range 0-100.\n\n");
                             Console.ResetColor();
                         }
                         break;
 
                     case 2:
-                        Console.Write("Enter the number of grades you want to add >> ");
-                        if (int.TryParse(Console.ReadLine(), out int n))
+                        Console.Write("Enter the grades you want to add (space separated) and press enter to continue >> ");
+                        string? input = Console.ReadLine();
+                        try
                         {
-                            int[] _grades = new int[n];
-                            int i = 0;
-                            while(i<n)
+                            int[] grades = input.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+                            foreach (int _grade in grades)
                             {
-                                bool isValidGrade = int.TryParse(Console.ReadLine(), out int next_grade);
-                                if(isValidGrade && (next_grade>=0 && next_grade<=100))
+                                if(_grade < 0 || _grade > 100)
                                 {
-                                    _grades[i] = next_grade;
-                                    i++;
-                                }
-                                else
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine($"Invalid grade: {next_grade}\n\n");
-                                    Console.ResetColor();
+                                    throw new FormatException();
                                 }
                             }
-
-                            manager.AddGrade(_grades);
+                            manager.AddGrade(grades);
                         }
-                        else
+                        catch(FormatException)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"Invalid number: {n}\n\n");
+                            Console.WriteLine("\nInvalid grade. Grade must be in range 0-100.\n\n");
+                            Console.ResetColor();
+                        }
+                        catch(Exception)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"\nAn error occured while adding grades.\n");
                             Console.ResetColor();
                         }
                         break;

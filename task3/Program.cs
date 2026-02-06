@@ -21,7 +21,7 @@ namespace task3
             get; set;
         }
 
-        public int Price
+        public decimal Price
         {
             get;
             set;
@@ -32,7 +32,7 @@ namespace task3
             set;
         }
 
-        private Product(string name, int price, int stock)
+        private Product(string name, decimal price, int stock)
         {
             totalProductsCreated++;
             Id = totalProductsCreated;
@@ -41,7 +41,7 @@ namespace task3
             Stock = stock;
         }
 
-        public static Product? ValidateAndConstructProduct(string name, int price, int stock)
+        public static Product? ValidateAndConstructProduct(string name, decimal price, int stock)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -70,11 +70,8 @@ namespace task3
             return new Product(name, price, stock);
         }
 
-        public void Sell()
+        public void Sell(int toSell)
         {
-            Console.Write($"Available Stocks: {Stock}\nEnter the amount of stocks you want to sell >> ");
-            if(int.TryParse(Console.ReadLine(), out int toSell))
-            {
                 if(Stock < toSell)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -86,13 +83,6 @@ namespace task3
                     Stock = Stock - toSell;
                     totalProductsSold += toSell;
                 }
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("Invalid entry !!\n");
-                Console.ResetColor();
-            }
         }
     }
 
@@ -100,11 +90,42 @@ namespace task3
     {
         public static void Main(string[] args)
         {
-            Product? laptop = Product.ValidateAndConstructProduct("Mac M2 2022", 65000, 10);
+            Console.Write("Enter the product name >> ");
+            string? productName = Console.ReadLine();
+
+            Console.Write("Enter the price >> ");
+            if(!decimal.TryParse(Console.ReadLine(), out decimal price))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Price must be a valid number!");
+                Console.ResetColor();
+                return;
+            }
+
+            Console.Write("Enter the stocks >> ");
+            if (!int.TryParse(Console.ReadLine(), out int stock))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Stocks must be a valid number!");
+                Console.ResetColor();
+                return;
+            }
+
+            Product? laptop = Product.ValidateAndConstructProduct(productName, price, stock);
             if(laptop != null)
             {
-                laptop.Sell();
-                Console.WriteLine($"Products sold: {Product.TotalProductsSold}");
+                Console.Write($"Product\tPrice\tStock\n{laptop.Name}\t{laptop.Price}\t{laptop.Stock}\n\nEnter the amount of stocks you want to sell >> ");
+                if(int.TryParse(Console.ReadLine(), out int toSell) && toSell>0)
+                {
+                    laptop.Sell(toSell);
+                    Console.WriteLine($"Products sold: {Product.TotalProductsSold}");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Invalid entry !!\n");
+                    Console.ResetColor();
+                }
             }
         }
     }

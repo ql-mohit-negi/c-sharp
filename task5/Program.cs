@@ -39,7 +39,7 @@
         public void ProcessPayment(IPayable Processor)
         {
             Console.Write("Enter the amount to be processed >> ");
-            if (int.TryParse(Console.ReadLine(), out int payment) && payment>=0)
+            if (decimal.TryParse(Console.ReadLine(), out decimal payment) && payment>0)
             {
                 Processor.ProcessPayment(payment);
             }
@@ -73,12 +73,12 @@
                             break;
 
                         default:
+                            Console.WriteLine("\nInvalid choice!! Enter in range 1-4.\n");
                             break;
                     }
 
                     if(paymentMethod == null)
                     {
-                        Console.WriteLine("\nInvalid choice!!\n");
                         continue;
                     }
 

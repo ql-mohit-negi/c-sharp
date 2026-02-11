@@ -10,8 +10,7 @@
     {
         public void ProcessPayment(decimal amount)
         {
-            Console.WriteLine($"Initiating credit card payment...Paying ${amount}");
-            Console.WriteLine("Payment completed.\n");
+            Console.WriteLine($"Initiating credit card payment...Paying ${amount}\nPayment completed.\n");
         }
     }
 
@@ -19,8 +18,7 @@
     {
         public void ProcessPayment(decimal amount)
         {
-            Console.WriteLine($"Initiating PayPal card payment...Paying ${amount}");
-            Console.WriteLine("Payment completed.\n");
+            Console.WriteLine($"Initiating PayPal card payment...Paying ${amount}\nPayment completed.\n");
         }
     }
 
@@ -29,14 +27,13 @@
     {
         public void ProcessPayment(decimal amount)
         {
-            Console.WriteLine($"Initiating bitcoin payment...Paying {amount} bitcoin");
-            Console.WriteLine("Payment completed.\n");
+            Console.WriteLine($"Initiating bitcoin payment...Paying {amount} bitcoin\nPayment completed.\n");
         }
     }
 
     class PaymentGatewaySimulator
     {
-        public void ProcessPayment(IPayable Processor)
+        public void PaymentProcessor(IPayable Processor)
         {
             Console.Write("Enter the amount to be processed >> ");
             if (decimal.TryParse(Console.ReadLine(), out decimal payment) && payment>0)
@@ -82,7 +79,7 @@
                         continue;
                     }
 
-                    ProcessPayment(paymentMethod);
+                    PaymentProcessor(paymentMethod);
                 }
                 else
                 {
